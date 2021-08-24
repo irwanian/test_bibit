@@ -1,3 +1,25 @@
+function getIndexOfBrackets(string) {
+    let indexOpeningBracket = -1
+    let indexClosingBracket = -1
+
+    for (let i in string) {
+        if (string[i] === '(') {
+            indexOpeningBracket = Number(i)
+        } else if (string[i] === ')') {
+            indexClosingBracket = Number(i)
+            if (indexClosingBracket > indexOpeningBracket && indexOpeningBracket !== -1) {
+                break;
+            } 
+        }
+    }
+
+    return {
+        indexOpeningBracket,
+        indexClosingBracket
+    }
+}
+
+
 function findFirstStringInBracket(string) {
     if (typeof string !== 'string') {
         return 'Data passed must be String'
@@ -6,19 +28,7 @@ function findFirstStringInBracket(string) {
     let result = ''
     
     if (string && string.includes('(') && string.includes(')') ) {
-        let indexOpeningBracket = -1
-        let indexClosingBracket = -1
-
-        for (let i in string) {
-            if (string[i] === '(') {
-                indexOpeningBracket = Number(i)
-            } else if (string[i] === ')') {
-                indexClosingBracket = Number(i)
-                if (indexClosingBracket > indexOpeningBracket && indexOpeningBracket !== -1) {
-                    break;
-                } 
-            }
-        }
+        const { indexOpeningBracket, indexClosingBracket } = getIndexOfBrackets(string)
 
         if (indexOpeningBracket < indexClosingBracket) {
             result = string.substring(indexOpeningBracket + 1, indexClosingBracket)
