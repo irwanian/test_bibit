@@ -38,4 +38,4 @@ function findFirstStringInBracket(string) {
     return result
 }
 
-console.log(findFirstStringInBracket('m)(ak)as)(((((a)(n)'))
+console.log(findFirstStringInBracket('m((hi))))a)))))(red)))s)(((((n)'))
