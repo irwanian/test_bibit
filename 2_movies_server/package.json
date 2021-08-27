@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "nyc --reporter=html --reporter=text mocha --timeout 10000",
     "start": "nodemon ."
   },
   "author": "Irwan Ramadhan <irwanramadhan288@gmail.com>",
@@ -20,5 +20,9 @@
     "mysql2": "^2.3.0",
     "nodemon": "^2.0.12",
     "sequelize": "^6.6.5"
+  },
+  "devDependencies": {
+    "mocha": "^9.1.0",
+    "nyc": "^15.1.0"
   }
 }
