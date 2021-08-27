@@ -1,7 +1,8 @@
 const axios = require('axios')
 const { OMDB_URL } = process.env
+const { parseDataObject } = require('../utils/helpers')
 
-module.exports.searchMovies = async (movie, page = 1) => {
+module.exports.searchMovies = async (params) => {
     const result = {
         status: true,
         message: '',
@@ -9,8 +10,8 @@ module.exports.searchMovies = async (movie, page = 1) => {
     }
 
     try {
-        const res = await axios.get(`${OMDB_URL}&s=${movie}&page=${page}`)
-        result.status = res.data     
+        const res = await axios.get(OMDB_URL, { params })
+        result.data = parseDataObject(res.data)   
         
         return result
     } catch (error) {
@@ -22,7 +23,7 @@ module.exports.searchMovies = async (movie, page = 1) => {
     }
 }
 
-module.exports.getMovieDetail = async (id) => {
+module.exports.getMovieDetail = async (params) => {
     const result = {
         status: true,
         message: '',
@@ -30,8 +31,8 @@ module.exports.getMovieDetail = async (id) => {
     }
     
     try {
-        const res = await axios.get(`${OMDB_URL}&i=${id}`)
-        result.status = res.data     
+        const res = await axios.get(OMDB_URL, { params })
+        result.data = parseDataObject(res.data)
         
         return result
     } catch (error) {

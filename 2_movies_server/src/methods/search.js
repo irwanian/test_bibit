@@ -1,25 +1,34 @@
-const ApiLogRepository = require('../repositories/api_call_log')
 const ApiDependency = require('../utils/api_dependency')
+const { insertLog } = require('../utils/log')
 
 module.exports.getMovieList = async (req, res) => {
-    const params = req.params.movie
-    const page = (req.query || {}).page
-    const movieList = await ApiDependency.searchMovies(params, page)
-
-    if (movieList.status === false) {
-        return res.error({ message: movieList.message })
+    const params = req.query
+    console.log(params)
+    const movieList = await ApiDependency.searchMovies(params)
+    const meta = {
+        total_data: movieList.data.totalResults || 0,
+        total_page: Math.ceil(Number(movieList.data.totalResults) / 10)
     }
 
     const logPayload = {
-        parameters: params,
         endpoint: '/search',
         parameters: {
-            params,
-            page
-        }
+            s: params.s,
+            y: params.y || null,
+            type: params.type || null,
+            page: params.page || null,
+         }
     }
 
-    await ApiLogRepository.insertLogdata(logPayload)
+    if (!movieList.status) {
+        insertLog({ ...logPayload, result: 'failed' })
+        return res.error({ message: movieList.message })
+    } else if (!meta.total_data) {
+        insertLog({ ...logPayload, result: 'failed' })
+        return res.error({ message: 'No Data Found', code: 404 })
+    }
 
-    return res.success({ payload: movieList })
+    insertLog({ ...logPayload, result: 'success' })
+
+    return res.success({ payload: movieList.data.Search, meta })
 }

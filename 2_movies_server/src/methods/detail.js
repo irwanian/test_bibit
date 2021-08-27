@@ -1,23 +1,28 @@
-const ApiLogRepository = require('../repositories/api_call_log')
 const ApiDependency = require('../utils/api_dependency')
+const { insertLog } = require('../utils/log')
+
 
 module.exports.getMovieDetail = async (req, res) => {
-    const id = req.params.id
-    const moviedetail = await ApiDependency.getMovieDetail(id)
+    const params = req.query
+    let moviedetail = await ApiDependency.getMovieDetail(params)
 
-    if (moviedetail.status === false) {
+    const logPayload = {
+        parameters: {
+            i: params.i || null,
+            t: params.t || null,
+            y: params.y || null,
+            type: params.type || null,
+            plot: params.plot || null
+        },
+        endpoint: '/detail',
+    }
+
+    if (!moviedetail.status) {
+        insertLog({ ...logPayload, result: 'failed' })
         return res.error({ message: moviedetail.message })
     }
 
-    const logPayload = {
-        parameters: params,
-        endpoint: '/detail',
-        parameters: {
-            params
-        }
-    }
+    insertLog({ ...logPayload, result: 'success' })
 
-    await ApiLogRepository.insertLogdata(logPayload)
-
-    return res.success({ payload: moviedetail })
+    return res.success({ payload: moviedetail.data })
 }

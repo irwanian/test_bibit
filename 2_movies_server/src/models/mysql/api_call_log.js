@@ -22,6 +22,9 @@ module.exports = (sequelize, DataTypes) => {
       parameters: {
         type: DataTypes.JSON,
       },
+      result: {
+        type: DataTypes.ENUM('success', 'failed')
+      },
       created_at: {
         type: DataTypes.DATE,
       }
